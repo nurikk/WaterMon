@@ -124,7 +124,7 @@ static Semaphore_Struct appSem;
 static uint8_t  appServiceTaskId;
 /* App service task events, set by the stack service task when sending a message */
 static uint32_t appServiceTaskEvents;
-static endPointDesc_t  zclGenericAppEpDesc = {0};
+static endPointDesc_t zclGenericAppEpDesc = {0};
 static endPointDesc_t zclGenericAppChannelsEpDesc[GENERICAPP_CHANNELS_COUNT];
 
 #if ZG_BUILD_ENDDEVICE_TYPE
@@ -410,7 +410,8 @@ static void zclGenericApp_Init( void )
 
       zclport_registerEndpoint(appServiceTaskId, &zclGenericAppChannelsEpDesc[i]);
       zclGeneral_RegisterCmdCallbacks( zclGenericApp_ChannelsSimpleDesc[i].EndPoint, &zclGenericApp_CmdCallbacks );
-      zcl_registerAttrList( zclGenericApp_ChannelsSimpleDesc[i].EndPoint, zclGenericApp_ChannelsNumAttributes, zclGenericApp_ChannelAttrs[i] );
+      zcl_registerAttrList(zclGenericApp_ChannelsSimpleDesc[i].EndPoint, zclGenericApp_ChannelsNumAttributes, zclGenericApp_ChannelAttrs[i]);
+      zclport_registerZclHandleExternal(zclGenericApp_ChannelsSimpleDesc[i].EndPoint, zclGenericApp_ProcessIncomingMsg);
 
   }
 
@@ -1267,6 +1268,8 @@ static void zclGenericApp_processKey(Button_Handle _btn)
 
     if(_btn == gButton0Handle) {
       GPIO_toggle(CONFIG_GPIO_RLED);
+
+//      ATTR(ZCL_CLUSTER_ID_SE_METERING, ATTRID_SE_METERING_CURR_SUMM_DLVD
     }
 
 }

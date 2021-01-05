@@ -98,7 +98,7 @@ const uint16_t zclGenericApp_identify_clusterRevision = 0x0001;
 const uint8_t zclGenericApp_HWRevision = GENERICAPP_HWVERSION;
 const uint8_t zclGenericApp_ZCLVersion = GENERICAPP_ZCLVERSION;
 const uint8_t zclGenericApp_ManufacturerName[] = { 16, 'T','e','x','a','s','I','n','s','t','r','u','m','e','n','t','s' };
-const uint8_t zclGenericApp_PowerSource = POWER_SOURCE_MAINS_1_PHASE;
+const uint8_t zclGenericApp_PowerSource = POWER_SOURCE_BATTERY;
 uint8_t zclGenericApp_PhysicalEnvironment = PHY_UNSPECIFIED_ENV;
 const uint8_t zclGenericApp_ModelName[] = { 5, 'T','e','s','t', '2'};
 const uint8_t zclGenericApp_DateCode[] = {4, '2', '0', '2', '0'};
@@ -263,7 +263,7 @@ uint8_t CONST zclGenericApp_NumAttributes = ( sizeof(zclGenericApp_Attrs) / size
     {CLUSTER,{NAME, TYPE, ACCESS, (void*) LOCATION}}
 
 
-uint8_t zclGenericApp_MeterCurrentSummationDelivered[][6] = {
+uint8_t zclGenericApp_MeterCurrentSummationDelivered[GENERICAPP_CHANNELS_COUNT][6] = {
         { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 },
         { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 },
         { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 }
@@ -271,21 +271,21 @@ uint8_t zclGenericApp_MeterCurrentSummationDelivered[][6] = {
 
 
 CONST zclAttrRec_t zclGenericApp_ChannelAttrs[][GENERICAPP_CHANNEL_ATTRS_COUNT] = {
-   // ================================ CH1 =========================================
+   // ================================ CH1 [0] =========================================
    {
-    ATTR(ZCL_CLUSTER_ID_SE_METERING, ATTRID_SE_METERING_CURR_SUMM_DLVD, ZCL_DATATYPE_UINT48, ACCESS_CONTROL_READ, zclGenericApp_MeterCurrentSummationDelivered[0])
+    ATTR(ZCL_CLUSTER_ID_SE_METERING, ATTRID_SE_METERING_CURR_SUMM_DLVD, ZCL_DATATYPE_UINT48, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE), zclGenericApp_MeterCurrentSummationDelivered[0])
    },
    // ============================== END  CH1 =======================================
 
-   // ================================ CH2 =========================================
+   // ================================ CH2 [1] =========================================
    {
-    ATTR(ZCL_CLUSTER_ID_SE_METERING, ATTRID_SE_METERING_CURR_SUMM_DLVD, ZCL_DATATYPE_UINT48, ACCESS_CONTROL_READ, zclGenericApp_MeterCurrentSummationDelivered[1])
+    ATTR(ZCL_CLUSTER_ID_SE_METERING, ATTRID_SE_METERING_CURR_SUMM_DLVD, ZCL_DATATYPE_UINT48, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE), zclGenericApp_MeterCurrentSummationDelivered[1])
    },
    // ============================== END  CH2 =======================================
 
-   // ================================ CH3 =========================================
+   // ================================ CH3 [2] =========================================
    {
-    ATTR(ZCL_CLUSTER_ID_SE_METERING, ATTRID_SE_METERING_CURR_SUMM_DLVD, ZCL_DATATYPE_UINT48, ACCESS_CONTROL_READ, zclGenericApp_MeterCurrentSummationDelivered[2])
+    ATTR(ZCL_CLUSTER_ID_SE_METERING, ATTRID_SE_METERING_CURR_SUMM_DLVD, ZCL_DATATYPE_UINT48, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE), zclGenericApp_MeterCurrentSummationDelivered[2])
    }
    // ============================== END  CH3 =======================================
 };
@@ -314,7 +314,7 @@ const cId_t zclGenericApp_OutClusterList[] =
 
 const cId_t zclGenericApp_ChannelsInClusterList[] =
 {
-
+  ZCL_CLUSTER_ID_GENERAL_BASIC
 };
 #define ZCLGENERICAPP_MAX_CHANNELS_INCLUSTERS   (sizeof(zclGenericApp_ChannelsInClusterList) / sizeof(zclGenericApp_ChannelsInClusterList[0]))
 
@@ -333,7 +333,6 @@ SimpleDescriptionFormat_t zclGenericApp_SimpleDesc =
   GENERICAPP_ENDPOINT,                  //  int Endpoint;
   ZCL_HA_PROFILE_ID,                     //  uint16_t AppProfId;
   ZCL_DEVICEID_TEST_DEVICE,          //  uint16_t AppDeviceId;
-  // GENERICAPP_TODO: Replace ZCL_DEVICEID_TEST_DEVICE with application specific device ID
   GENERICAPP_DEVICE_VERSION,            //  int   AppDevVer:4;
   GENERICAPP_FLAGS,                     //  int   AppFlags:4;
   ZCLGENERICAPP_MAX_INCLUSTERS,         //  byte  AppNumInClusters;
@@ -357,7 +356,6 @@ void zclGenericApp_InitChannelsClusters(void) {
           (cId_t *)zclGenericApp_ChannelsOutClusterList //  byte *pAppInClusterList;
         };
     }
-
 }
 
 // Added to include Touchlink Target functionality
@@ -366,8 +364,7 @@ bdbTLDeviceInfo_t tlGenericApp_DeviceInfo =
 {
   GENERICAPP_ENDPOINT,                  //uint8_t endpoint;
   ZCL_HA_PROFILE_ID,                        //uint16_t profileID;
-  // GENERICAPP_TODO: Replace ZCL_DEVICEID_ON_OFF_LIGHT with application specific device ID
-  ZCL_DEVICEID_ON_OFF_LIGHT,          //uint16_t deviceID;
+  ZCL_DEVICEID_GENERIC,          //uint16_t deviceID;
   GENERICAPP_DEVICE_VERSION,                    //uint8_t version;
   GENERICAPP_NUM_GRPS                   //uint8_t grpIdCnt;
 };

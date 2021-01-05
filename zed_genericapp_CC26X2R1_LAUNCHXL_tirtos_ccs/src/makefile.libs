@@ -1,6 +1,6 @@
 #
 # This file was generated based on the configuration script:
-#     /Users/nur/workspace_v10/zed_genericapp_CC26X2R1_LAUNCHXL_tirtos_ccs/app.cfg
+#     /Users/nur/git/repository/zed_genericapp_CC26X2R1_LAUNCHXL_tirtos_ccs/app.cfg
 #
 # This makefile may be included in other makefiles that need to build
 # the libraries containing the compiled source files generated as
@@ -14,7 +14,7 @@
 #
 # The absolute path to the generated source directory (at the time the
 # sources were generated) is:
-#    /Users/nur/workspace_v10/zed_genericapp_CC26X2R1_LAUNCHXL_tirtos_ccs/src
+#    /Users/nur/git/repository/zed_genericapp_CC26X2R1_LAUNCHXL_tirtos_ccs/src
 #
 GEN_SRC_DIR ?= ../src
 

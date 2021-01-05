@@ -142,6 +142,7 @@ zstack.advanced.$name                        = "ti_zstack_advanced_zstack_advanc
 zstack.advanced.routing.$name                = "ti_zstack_advanced_zstack_routing0";
 zstack.advanced.packetSending.$name          = "ti_zstack_advanced_zstack_packet_sending0";
 zstack.advanced.tableSize.$name              = "ti_zstack_advanced_zstack_table_size0";
+zstack.advanced.tableSize.bindingTableSize   = 10;
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

@@ -63,11 +63,12 @@ extern "C"
  * CONSTANTS
  */
 #define GENERICAPP_ENDPOINT            1
-// Added to include Touchlink Target functionality
-#define GENERICAPP_NUM_GRPS                 2
 #define GENERICAPP_CHANNELS_COUNT           3
 #define GENERICAPP_CHANNELS_STARTING_ENDPOINT     10
 #define GENERICAPP_CHANNEL_ATTRS_COUNT      1
+
+// Added to include Touchlink Target functionality
+#define GENERICAPP_NUM_GRPS 2
 
 
 // Application Events
