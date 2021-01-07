@@ -69,6 +69,7 @@
 #include "zcl_port.h"
 
 #include <ti/drivers/apps/Button.h>
+#include <ti/drivers/ADC.h>
 #include "ti_drivers_config.h"
 #include "util_timer.h"
 
@@ -128,6 +129,11 @@ static Clock_Handle EndDeviceRejoinClkHandle;
 static Clock_Struct EndDeviceRejoinClkStruct;
 #endif
 
+
+static Clock_Handle adcSamplingClkHandle;
+static Clock_Struct adcSamplingClkStruct;
+
+
 // Passed in function pointers to the NV driver
 static NVINTF_nvFuncts_t *pfnZdlNV = NULL;
 
@@ -153,11 +159,13 @@ static void Initialize_ChannelsButtons(void);
 #if ZG_BUILD_ENDDEVICE_TYPE
 static void zclGenericApp_processEndDeviceRejoinTimeoutCallback(UArg a0);
 #endif
+static void zclGenericApp_processAdcSamplintTimeoutCallback(UArg a0);
 static void zclGenericApp_changeKeyCallback(Button_Handle _btn, Button_EventMask _buttonEvents);
 static void zclGenericApp_CounterPinCallback(Button_Handle _btn, Button_EventMask _buttonEvents);
 
 static void zclGenericApp_processKey(Button_Handle _btn);
 static void zclGenericApp_processCounter(Button_Handle _btn);
+static void zclGenericApp_processAdc(void);
 static void zclGenericApp_Init( void );
 static void zclGenericApp_BasicResetCB( void );
 static void zclGenericApp_RemoveAppNvmData(void);
@@ -421,7 +429,7 @@ static void zclGenericApp_Init( void )
 
       zclport_registerEndpoint(appServiceTaskId, &zclGenericAppChannelsEpDesc[i]);
       zclGeneral_RegisterCmdCallbacks( zclGenericApp_ChannelsSimpleDesc[i].EndPoint, &zclGenericApp_CmdCallbacks );
-      zcl_registerAttrList(zclGenericApp_ChannelsSimpleDesc[i].EndPoint, zclGenericApp_ChannelsNumAttributes, zclGenericApp_ChannelAttrs[i]);
+      zcl_registerAttrList(zclGenericApp_ChannelsSimpleDesc[i].EndPoint, GENERICAPP_CHANNEL_ATTRS_COUNT, zclGenericApp_ChannelAttrs[i]);
       zclport_registerZclHandleExternal(zclGenericApp_ChannelsSimpleDesc[i].EndPoint, zclGenericApp_ProcessIncomingMsg);
 
   }
@@ -544,6 +552,14 @@ static void zclGenericApp_initializeClocks(void)
     0, false, 0);
 #endif
 
+
+
+    adcSamplingClkHandle = UtilTimer_construct(
+    &adcSamplingClkStruct,
+    zclGenericApp_processAdcSamplintTimeoutCallback,
+    0,
+    GENERICAPP_ADC_SAMPLING_INTERVAL, true, 0); //start immediately
+
 }
 
 #if ZG_BUILD_ENDDEVICE_TYPE
@@ -566,6 +582,17 @@ static void zclGenericApp_processEndDeviceRejoinTimeoutCallback(UArg a0)
     Semaphore_post(appSemHandle);
 }
 #endif
+
+
+static void zclGenericApp_processAdcSamplintTimeoutCallback(UArg a0)
+{
+    (void)a0; // Parameter is not used
+
+    appServiceTaskEvents |= GENERICAPP_ADC_SAMPLING_EVT;
+
+    // Wake up the application thread when it waits for clock event
+    Semaphore_post(appSemHandle);
+}
 
 /*********************************************************************
  * @fn          zclSample_event_loop
@@ -629,12 +656,10 @@ static void zclGenericApp_process_loop( void )
         }
 #endif
 
-        /* GENERICAPP_TODO: handle app events here */
-
-        if ( appServiceTaskEvents & GENERICAPP_EVT_1 )
+        if ( appServiceTaskEvents & GENERICAPP_ADC_SAMPLING_EVT )
         {
-
-          appServiceTaskEvents &= ~GENERICAPP_EVT_1;
+          zclGenericApp_processAdc();
+          appServiceTaskEvents &= ~GENERICAPP_ADC_SAMPLING_EVT;
         }
 
         /*
@@ -1247,4 +1272,39 @@ static void zclGenericApp_processCounter(Button_Handle _btn)
   }
 }
 
+static void zclGenericApp_processAdc(void) {
+    GPIO_toggle(CONFIG_GPIO_GLED);
+    ADC_Params   params;
+    int_fast16_t res;
+    uint8_t adcChannels[] = {CONFIG_ADC_CH1, CONFIG_ADC_CH2};
+    ADC_init();
+    ADC_Params_init(&params);
 
+    for (uint8_t i = 0; i < sizeof(adcChannels) / sizeof(adcChannels[0]); i++) {
+        ADC_Handle adc = ADC_open(adcChannels[i], &params);
+        if (adc == NULL) {
+          continue;
+        }
+        uint16_t adcValue0;
+        int32 totalMicrovolts = 0;
+        for(uint8_t j = 0; j < GENERICAPP_ADC_SAMPLES_COUNT; j++) {
+            res = ADC_convert(adc, &adcValue0);
+            if (res == ADC_STATUS_SUCCESS) {
+                totalMicrovolts += ADC_convertRawToMicroVolts(adc, adcValue0);
+            }
+        }
+
+        zclGenericApp_ADCValues[i] = 1000000.0 * totalMicrovolts / GENERICAPP_ADC_SAMPLES_COUNT;
+        ADC_close(adc);
+
+        zstack_bdbRepChangedAttrValueReq_t Req;
+        Req.attrID = ATTRID_IOV_BASIC_PRESENT_VALUE;
+        Req.cluster = ZCL_CLUSTER_ID_GENERAL_ANALOG_INPUT_BASIC;
+        Req.endpoint = zclGenericApp_ChannelsSimpleDesc[i].EndPoint;
+        Zstackapi_bdbRepChangedAttrValueReq(appServiceTaskId, &Req);
+    }
+
+
+    UtilTimer_setTimeout(adcSamplingClkHandle, GENERICAPP_ADC_SAMPLING_INTERVAL);
+    UtilTimer_start(&adcSamplingClkStruct);
+}

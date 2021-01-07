@@ -10,6 +10,9 @@
  */
 const CCFG     = scripting.addModule("/ti/devices/CCFG");
 const rfdesign = scripting.addModule("/ti/devices/radioconfig/rfdesign");
+const ADC      = scripting.addModule("/ti/drivers/ADC", {}, false);
+const ADC1     = ADC.addInstance();
+const ADC2     = ADC.addInstance();
 const AESCBC   = scripting.addModule("/ti/drivers/AESCBC");
 const AESCBC1  = AESCBC.addInstance();
 const AESCCM   = scripting.addModule("/ti/drivers/AESCCM");
@@ -53,6 +56,14 @@ CCFG.enableBootloaderBackdoor = true;
 CCFG.dioBootloaderBackdoor    = 13;
 CCFG.levelBootloaderBackdoor  = "Active low";
 CCFG.ccfgTemplate.$name       = "ti_devices_CCFGTemplate0";
+
+ADC1.$name                = "CONFIG_ADC_CH1";
+ADC1.adc.adcPin.$assign   = "boosterpack.24";
+ADC1.adcPinInstance.$name = "CONFIG_PIN_4";
+
+ADC2.$name                = "CONFIG_ADC_CH2";
+ADC2.adc.adcPin.$assign   = "boosterpack.23";
+ADC2.adcPinInstance.$name = "CONFIG_PIN_5";
 
 AESCBC1.$name = "CONFIG_AESCBC_0";
 
@@ -163,6 +174,8 @@ zstack.advanced.tableSize.bindingTableSize   = 10;
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
+ADC1.adc.$suggestSolution                                         = "ADC0";
+ADC2.adc.$suggestSolution                                         = "ADC0";
 UART1.uart.$suggestSolution                                       = "UART1";
 UART1.uart.txPin.$suggestSolution                                 = "boosterpack.4";
 UART1.uart.rxPin.$suggestSolution                                 = "boosterpack.3";
