@@ -76,10 +76,6 @@
 #include <ti/sysbios/knl/Semaphore.h>
 #include <ti/sysbios/knl/Task.h>
 
-#if !defined (DISABLE_GREENPOWER_BASIC_PROXY) && (ZG_BUILD_RTR_TYPE)
-#include "gp_common.h"
-#endif
-
 #if defined ( BDB_TL_INITIATOR )
 #include "touchlink_initiator_app.h"
 #elif defined ( BDB_TL_TARGET )
@@ -371,13 +367,11 @@ static void SetupZStackCallbacks(void)
 }
 
 
-void gpioButtonFxn0(uint_least8_t index)
-{
-    /* Toggle an LED */
-    GPIO_toggle(CONFIG_GPIO_RLED);
-
-
-}
+// void gpioButtonFxn0(uint_least8_t index)
+// {
+//     /* Toggle an LED */
+//     GPIO_toggle(CONFIG_GPIO_RLED);
+// }
 
 /*********************************************************************
  * @fn          zclGenericApp_Init
@@ -432,10 +426,6 @@ static void zclGenericApp_Init( void )
 
   }
 
-#if !defined (DISABLE_GREENPOWER_BASIC_PROXY) && (ZG_BUILD_RTR_TYPE)
-  gp_endpointInit(appServiceTaskId);
-#endif
-
   //Write the bdb initialization parameters
   zclGenericApp_initParameters();
 
@@ -458,10 +448,6 @@ static void zclGenericApp_Init( void )
   }
 #endif
 
-#if !defined (DISABLE_GREENPOWER_BASIC_PROXY) && (ZG_BUILD_RTR_TYPE)
-  app_Green_Power_Init(appServiceTaskId, &appServiceTaskEvents, appSemHandle, SAMPLEAPP_PROCESS_GP_DATA_SEND_EVT,
-                       SAMPLEAPP_PROCESS_GP_EXPIRE_DUPLICATE_EVT, SAMPLEAPP_PROCESS_GP_TEMP_MASTER_EVT);
-#endif
 
 #if defined ( BDB_TL_INITIATOR )
     touchLinkInitiatorApp_Init(appServiceTaskId);
@@ -632,36 +618,6 @@ static void zclGenericApp_process_loop( void )
               appServiceTaskEvents &= ~GENERICAPP_COUNTER_PIN_EVT;
           }
 
-          
-
-#if !defined (DISABLE_GREENPOWER_BASIC_PROXY) && (ZG_BUILD_RTR_TYPE)
-            if(appServiceTaskEvents & SAMPLEAPP_PROCESS_GP_DATA_SEND_EVT)
-            {
-                if(zgGP_ProxyCommissioningMode == TRUE)
-                {
-                  zcl_gpSendCommissioningNotification();
-                }
-                else
-                {
-                  zcl_gpSendNotification();
-                }
-                appServiceTaskEvents &= ~SAMPLEAPP_PROCESS_GP_DATA_SEND_EVT;
-            }
-
-            if(appServiceTaskEvents & SAMPLEAPP_PROCESS_GP_EXPIRE_DUPLICATE_EVT)
-            {
-                gp_expireDuplicateFiltering();
-                appServiceTaskEvents &= ~SAMPLEAPP_PROCESS_GP_EXPIRE_DUPLICATE_EVT;
-            }
-
-            if(appServiceTaskEvents & SAMPLEAPP_PROCESS_GP_TEMP_MASTER_EVT)
-            {
-                gp_returnOperationalChannel();
-                appServiceTaskEvents &= ~SAMPLEAPP_PROCESS_GP_TEMP_MASTER_EVT;
-            }
-#endif
-
-
 #if ZG_BUILD_ENDDEVICE_TYPE
         if ( appServiceTaskEvents & GENERICAPP_END_DEVICE_REJOIN_EVT )
         {
@@ -786,43 +742,6 @@ static void zclGenericApp_processZStackMsgs(zstackmsg_genericReq_t *pMsg)
 //                  UI_DeviceStateUpdated(&(pInd->req));
         }
         break;
-
-
-
-        /*
-         * These are messages/indications from ZStack that this
-         * application doesn't process.  These message can be
-         * processed by your application, remove from this list and
-         * process them here in this switch statement.
-         */
-
-#if !defined (DISABLE_GREENPOWER_BASIC_PROXY) && (ZG_BUILD_RTR_TYPE)
-          case zstackmsg_CmdIDs_GP_DATA_IND:
-          {
-              zstackmsg_gpDataInd_t *pInd;
-              pInd = (zstackmsg_gpDataInd_t*)pMsg;
-              gp_processDataIndMsg( &(pInd->Req) );
-          }
-          break;
-
-          case zstackmsg_CmdIDs_GP_SECURITY_REQ:
-          {
-              zstackmsg_gpSecReq_t *pInd;
-              pInd = (zstackmsg_gpSecReq_t*)pMsg;
-              gp_processSecRecMsg( &(pInd->Req) );
-          }
-          break;
-
-          case zstackmsg_CmdIDs_GP_CHECK_ANNCE:
-          {
-              zstackmsg_gpCheckAnnounce_t *pInd;
-              pInd = (zstackmsg_gpCheckAnnounce_t*)pMsg;
-              gp_processCheckAnnceMsg( &(pInd->Req) );
-          }
-          break;
-
-#endif
-
 
 #ifdef BDB_TL_TARGET
         case zstackmsg_CmdIDs_BDB_TOUCHLINK_TARGET_ENABLE_IND:
