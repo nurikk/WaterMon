@@ -62,10 +62,10 @@ extern "C"
 /*********************************************************************
  * CONSTANTS
  */
-#define GENERICAPP_ENDPOINT            1
-#define GENERICAPP_CHANNELS_COUNT           3
-#define GENERICAPP_CHANNELS_STARTING_ENDPOINT     10
-#define GENERICAPP_CHANNEL_ATTRS_COUNT      1
+#define GENERICAPP_ENDPOINT                       1
+#define GENERICAPP_CHANNELS_COUNT                 3
+#define GENERICAPP_CHANNELS_STARTING_ENDPOINT     2
+#define GENERICAPP_CHANNEL_ATTRS_COUNT            1
 
 // Added to include Touchlink Target functionality
 #define GENERICAPP_NUM_GRPS 2
@@ -75,6 +75,7 @@ extern "C"
 #define GENERICAPP_MAIN_SCREEN_EVT          0x0001
 #define GENERICAPP_KEY_EVT                  0x0002
 #define GENERICAPP_END_DEVICE_REJOIN_EVT    0x0004
+#define GENERICAPP_COUNTER_PIN_EVT          0x0008
 
 /* GENERICAPP_TODO: define app events here */
 
@@ -121,9 +122,13 @@ extern CONST uint8_t zclCmdsArraySize;
 // attribute list
 extern CONST zclAttrRec_t zclGenericApp_Attrs[];
 extern CONST zclAttrRec_t zclGenericApp_ChannelAttrs[][GENERICAPP_CHANNEL_ATTRS_COUNT];
+
 extern CONST uint8_t zclGenericApp_NumAttributes;
 extern CONST uint8_t zclGenericApp_ChannelsNumAttributes;
 
+
+extern uint8_t zclGenericApp_MeterCurrentSummationDelivered[GENERICAPP_CHANNELS_COUNT][6];
+extern uint16_t zclGenericApp_MutistateInputValues[GENERICAPP_CHANNELS_COUNT];
 // Identify attributes
 #ifdef ZCL_IDENTIFY
 extern uint16_t zclGenericApp_IdentifyTime;

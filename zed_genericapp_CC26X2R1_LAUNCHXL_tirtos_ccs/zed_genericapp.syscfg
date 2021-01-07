@@ -38,6 +38,8 @@ const Button   = scripting.addModule("/ti/drivers/apps/Button");
 const Button1  = Button.addInstance();
 const Button2  = Button.addInstance();
 const Button3  = Button.addInstance();
+const Button4  = Button.addInstance();
+const Button5  = Button.addInstance();
 const LED      = scripting.addModule("/ti/drivers/apps/LED");
 const LED1     = LED.addInstance();
 const LED2     = LED.addInstance();
@@ -97,11 +99,23 @@ Button2.$hardware                 = system.deviceData.board.components["BTN-2"];
 Button2.gpioPin.$name             = "CONFIG_GPIO_BTN2";
 Button2.gpioPin.pinInstance.$name = "CONFIG_PIN_BTN2";
 
-Button3.$name                     = "CONFIG_BUTTON_0";
 Button3.hwConfig                  = "Active High No Pull";
+Button3.$name                     = "CONFIG_BUTTON_CH1";
 Button3.gpioPin.$name             = "CONFIG_GPIO_1";
-Button3.gpioPin.gpioPin.$assign   = "boosterpack.18";
+Button3.gpioPin.gpioPin.$assign   = "boosterpack.25";
 Button3.gpioPin.pinInstance.$name = "CONFIG_PIN_1";
+
+Button4.$name                     = "CONFIG_BUTTON_CH2";
+Button4.hwConfig                  = "Active High No Pull";
+Button4.gpioPin.$name             = "CONFIG_GPIO_2";
+Button4.gpioPin.gpioPin.$assign   = "boosterpack.26";
+Button4.gpioPin.pinInstance.$name = "CONFIG_PIN_2";
+
+Button5.$name                     = "CONFIG_BUTTON_CH3";
+Button5.hwConfig                  = "Active High No Pull";
+Button5.gpioPin.$name             = "CONFIG_GPIO_3";
+Button5.gpioPin.gpioPin.$assign   = "boosterpack.27";
+Button5.gpioPin.pinInstance.$name = "CONFIG_PIN_3";
 
 LED1.$name                     = "CONFIG_LED_RED";
 LED1.$hardware                 = system.deviceData.board.components.LED_RED;

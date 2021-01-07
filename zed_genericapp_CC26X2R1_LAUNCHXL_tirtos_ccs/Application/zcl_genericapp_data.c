@@ -48,7 +48,6 @@
 #include "zcl.h"
 #include "zcl_general.h"
 #include "zcl_ha.h"
-#include "zcl_se.h"
 
 /* GENERICAPP_TODO: Include any of the header files below to access specific cluster data
 #include "zcl_poll_control.h"
@@ -262,30 +261,25 @@ uint8_t CONST zclGenericApp_NumAttributes = ( sizeof(zclGenericApp_Attrs) / size
 #define ATTR(CLUSTER, NAME, TYPE, ACCESS, LOCATION) \
     {CLUSTER,{NAME, TYPE, ACCESS, (void*) LOCATION}}
 
-
-uint8_t zclGenericApp_MeterCurrentSummationDelivered[GENERICAPP_CHANNELS_COUNT][6] = {
-        { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 },
-        { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 },
-        { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66 }
-};
+uint16_t zclGenericApp_MutistateInputValues[GENERICAPP_CHANNELS_COUNT];
 
 
 CONST zclAttrRec_t zclGenericApp_ChannelAttrs[][GENERICAPP_CHANNEL_ATTRS_COUNT] = {
    // ================================ CH1 [0] =========================================
    {
-    ATTR(ZCL_CLUSTER_ID_SE_METERING, ATTRID_SE_METERING_CURR_SUMM_DLVD, ZCL_DATATYPE_UINT48, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE), zclGenericApp_MeterCurrentSummationDelivered[0])
+    ATTR(ZCL_CLUSTER_ID_GENERAL_MULTISTATE_INPUT_BASIC, ATTRID_IOV_BASIC_PRESENT_VALUE, ZCL_DATATYPE_UINT16, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE | ACCESS_CONTROL_WRITE), &zclGenericApp_MutistateInputValues[0])
    },
    // ============================== END  CH1 =======================================
 
    // ================================ CH2 [1] =========================================
    {
-    ATTR(ZCL_CLUSTER_ID_SE_METERING, ATTRID_SE_METERING_CURR_SUMM_DLVD, ZCL_DATATYPE_UINT48, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE), zclGenericApp_MeterCurrentSummationDelivered[1])
+    ATTR(ZCL_CLUSTER_ID_GENERAL_MULTISTATE_INPUT_BASIC, ATTRID_IOV_BASIC_PRESENT_VALUE, ZCL_DATATYPE_UINT16, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE | ACCESS_CONTROL_WRITE), &zclGenericApp_MutistateInputValues[1])
    },
    // ============================== END  CH2 =======================================
 
    // ================================ CH3 [2] =========================================
    {
-    ATTR(ZCL_CLUSTER_ID_SE_METERING, ATTRID_SE_METERING_CURR_SUMM_DLVD, ZCL_DATATYPE_UINT48, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE), zclGenericApp_MeterCurrentSummationDelivered[2])
+    ATTR(ZCL_CLUSTER_ID_GENERAL_MULTISTATE_INPUT_BASIC, ATTRID_IOV_BASIC_PRESENT_VALUE, ZCL_DATATYPE_UINT16, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE | ACCESS_CONTROL_WRITE), &zclGenericApp_MutistateInputValues[2])
    }
    // ============================== END  CH3 =======================================
 };
@@ -314,14 +308,13 @@ const cId_t zclGenericApp_OutClusterList[] =
 
 const cId_t zclGenericApp_ChannelsInClusterList[] =
 {
-  ZCL_CLUSTER_ID_GENERAL_BASIC
 };
 #define ZCLGENERICAPP_MAX_CHANNELS_INCLUSTERS   (sizeof(zclGenericApp_ChannelsInClusterList) / sizeof(zclGenericApp_ChannelsInClusterList[0]))
 
 
 const cId_t zclGenericApp_ChannelsOutClusterList[] =
 {
- ZCL_CLUSTER_ID_SE_METERING
+ ZCL_CLUSTER_ID_GENERAL_MULTISTATE_INPUT_BASIC
 };
 
 #define ZCLGENERICAPP_MAX_CHANNELS_OUTCLUSTERS  (sizeof(zclGenericApp_ChannelsOutClusterList) / sizeof(zclGenericApp_ChannelsOutClusterList[0]))
@@ -345,7 +338,7 @@ SimpleDescriptionFormat_t zclGenericApp_SimpleDesc =
 void zclGenericApp_InitChannelsClusters(void) {
     for (uint8_t i = 0; i < GENERICAPP_CHANNELS_COUNT; i++) {
         zclGenericApp_ChannelsSimpleDesc[i] = (SimpleDescriptionFormat_t){
-          GENERICAPP_CHANNELS_STARTING_ENDPOINT + i + 1,                              //  int Endpoint;
+          GENERICAPP_CHANNELS_STARTING_ENDPOINT + i,                              //  int Endpoint;
           ZCL_HA_PROFILE_ID,                  //  uint16_t AppProfId[2];
           ZCL_DEVICEID_GENERIC,               //  uint16_t AppDeviceId[2];
           GENERICAPP_DEVICE_VERSION,            //  int   AppDevVer:4;
@@ -382,6 +375,9 @@ void zclGenericApp_ResetAttributesToDefaultValues(void)
 {
 
   zclGenericApp_PhysicalEnvironment = PHY_UNSPECIFIED_ENV;
+  for (uint8_t i = 0; i < GENERICAPP_CHANNELS_COUNT; i++) {
+      zclGenericApp_MutistateInputValues[i] = 0;
+  }
 
 #ifdef ZCL_IDENTIFY
   zclGenericApp_IdentifyTime = 0;

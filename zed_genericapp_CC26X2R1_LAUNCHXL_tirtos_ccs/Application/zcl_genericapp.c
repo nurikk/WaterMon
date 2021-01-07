@@ -106,7 +106,7 @@
 byte zclGenericApp_TaskID;
 static Button_Handle gRightButtonHandle;
 static Button_Handle gLeftButtonHandle;
-static Button_Handle gButton0Handle;
+static Button_Handle counterHandles[GENERICAPP_CHANNELS_COUNT];
 
 /*********************************************************************
  * GLOBAL FUNCTIONS
@@ -137,6 +137,7 @@ static NVINTF_nvFuncts_t *pfnZdlNV = NULL;
 
 // Key press parameters
 static Button_Handle keys = NULL;
+static Button_Handle counters = NULL;
 
 
 afAddrType_t zclGenericApp_DstAddr;
@@ -152,11 +153,15 @@ static void SetupZStackCallbacks(void);
 static void zclGenericApp_processAfIncomingMsgInd(zstack_afIncomingMsgInd_t *pInMsg);
 static void zclGenericApp_initializeClocks(void);
 static void Initialize_UI(void);
+static void Initialize_ChannelsButtons(void);
 #if ZG_BUILD_ENDDEVICE_TYPE
 static void zclGenericApp_processEndDeviceRejoinTimeoutCallback(UArg a0);
 #endif
 static void zclGenericApp_changeKeyCallback(Button_Handle _btn, Button_EventMask _buttonEvents);
+static void zclGenericApp_CounterPinCallback(Button_Handle _btn, Button_EventMask _buttonEvents);
+
 static void zclGenericApp_processKey(Button_Handle _btn);
+static void zclGenericApp_processCounter(Button_Handle _btn);
 static void zclGenericApp_Init( void );
 static void zclGenericApp_BasicResetCB( void );
 static void zclGenericApp_RemoveAppNvmData(void);
@@ -317,8 +322,6 @@ static void Initialize_UI(void)
     Button_Params bparams;
     Button_Params_init(&bparams);
     gLeftButtonHandle = Button_open(CONFIG_BTN_LEFT, zclGenericApp_changeKeyCallback, &bparams);
-    gButton0Handle = Button_open(CONFIG_BUTTON_0, zclGenericApp_changeKeyCallback, &bparams);
-    
     // Open Right button without appCallBack
     gRightButtonHandle = Button_open(CONFIG_BTN_RIGHT, NULL, &bparams);
 
@@ -331,6 +334,19 @@ static void Initialize_UI(void)
     // Set button callback
     Button_setCallback(gRightButtonHandle, zclGenericApp_changeKeyCallback);
 }
+
+
+static void Initialize_ChannelsButtons(void)
+{
+    /* Initialize counters */
+    Button_Params bparams;
+    Button_Params_init(&bparams);
+
+    counterHandles[0] = Button_open(CONFIG_BUTTON_CH1, zclGenericApp_CounterPinCallback, &bparams);
+    counterHandles[1] = Button_open(CONFIG_BUTTON_CH2, zclGenericApp_CounterPinCallback, &bparams);
+    counterHandles[2] = Button_open(CONFIG_BUTTON_CH3, zclGenericApp_CounterPinCallback, &bparams);
+}
+
 
 /*******************************************************************************
  * @fn      SetupZStackCallbacks
@@ -381,6 +397,7 @@ static void zclGenericApp_Init( void )
   zclGenericApp_DstAddr.addr.shortAddr = 0;
 
   Initialize_UI();
+  Initialize_ChannelsButtons();
   zclGenericApp_InitChannelsClusters();
 
   //Register Endpoint
@@ -606,6 +623,16 @@ static void zclGenericApp_process_loop( void )
               keys = NULL;
               appServiceTaskEvents &= ~GENERICAPP_KEY_EVT;
           }
+
+          if(appServiceTaskEvents & GENERICAPP_COUNTER_PIN_EVT)
+          {
+              // Process counter
+              zclGenericApp_processCounter(counters);
+              counters = NULL;
+              appServiceTaskEvents &= ~GENERICAPP_COUNTER_PIN_EVT;
+          }
+
+          
 
 #if !defined (DISABLE_GREENPOWER_BASIC_PROXY) && (ZG_BUILD_RTR_TYPE)
             if(appServiceTaskEvents & SAMPLEAPP_PROCESS_GP_DATA_SEND_EVT)
@@ -1233,6 +1260,20 @@ static void zclGenericApp_changeKeyCallback(Button_Handle _btn, Button_EventMask
 }
 
 
+
+static void zclGenericApp_CounterPinCallback(Button_Handle _btn, Button_EventMask _buttonEvents)
+{
+    if (_buttonEvents & Button_EV_CLICKED)
+    {
+        counters = _btn;
+
+        appServiceTaskEvents |= GENERICAPP_COUNTER_PIN_EVT;
+
+        // Wake up the application thread when it waits for clock event
+        Semaphore_post(appSemHandle);
+    }
+}
+
 /*********************************************************************
  * @fn      zclGenericApp_processKey
  *
@@ -1266,13 +1307,25 @@ static void zclGenericApp_processKey(Button_Handle _btn)
         Zstackapi_bdbResetLocalActionReq(appServiceTaskId);
     }
 
-    if(_btn == gButton0Handle) {
-      GPIO_toggle(CONFIG_GPIO_RLED);
-
-//      ATTR(ZCL_CLUSTER_ID_SE_METERING, ATTRID_SE_METERING_CURR_SUMM_DLVD
-    }
-
 }
 
+static void zclGenericApp_processCounter(Button_Handle _btn)
+{
+  GPIO_toggle(CONFIG_GPIO_RLED);
+
+
+  for (size_t i = 0; i < GENERICAPP_CHANNELS_COUNT; i++) {
+    if (_btn == counterHandles[i]) {
+      zclGenericApp_MutistateInputValues[i] +=1;
+
+      zstack_bdbRepChangedAttrValueReq_t Req;
+      Req.attrID = ATTRID_IOV_BASIC_PRESENT_VALUE;
+      Req.cluster = ZCL_CLUSTER_ID_GENERAL_MULTISTATE_INPUT_BASIC;
+      Req.endpoint = zclGenericApp_ChannelsSimpleDesc[i].EndPoint;
+      Zstackapi_bdbRepChangedAttrValueReq(appServiceTaskId, &Req);
+      break;
+    }
+  }
+}
 
 
