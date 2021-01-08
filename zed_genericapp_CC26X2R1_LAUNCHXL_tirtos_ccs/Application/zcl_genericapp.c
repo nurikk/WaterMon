@@ -365,12 +365,6 @@ static void SetupZStackCallbacks(void) {
   (void)Zstackapi_DevZDOCBReq(appServiceTaskId, &zdoCBReq);
 }
 
-// void gpioButtonFxn0(uint_least8_t index)
-// {
-//     /* Toggle an LED */
-//     GPIO_toggle(CONFIG_GPIO_RLED);
-// }
-
 /*********************************************************************
  * @fn          zclGenericApp_Init
  *
@@ -1192,7 +1186,7 @@ static void zclGenericApp_processKey(Button_Handle _btn) {
 }
 
 static void zclGenericApp_processCounter(Button_Handle _btn) {
-  GPIO_toggle(CONFIG_GPIO_RLED);
+  // GPIO_toggle(CONFIG_GPIO_RLED);
 
   for (size_t i = 0; i < GENERICAPP_CHANNELS_COUNT; i++) {
     if (_btn == counterHandles[i]) {
@@ -1213,7 +1207,7 @@ static void zclGenericApp_processAdc(void) {
   Temperature_init();
   zclGenericApp_deviceTemperature = Temperature_getTemperature();
 
-  GPIO_toggle(CONFIG_GPIO_GLED);
+  // GPIO_toggle(CONFIG_GPIO_GLED);
   ADC_Params params;
   int_fast16_t res;
   uint8_t adcChannels[] = {CONFIG_ADC_CH1, CONFIG_ADC_CH2};

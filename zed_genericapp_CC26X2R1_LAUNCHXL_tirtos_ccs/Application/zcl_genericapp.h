@@ -97,7 +97,7 @@ extern "C"
 #define GENERIC_HELPMODE      0x01
 
 #define GENERICAPP_END_DEVICE_REJOIN_DELAY 1000
-#define GENERICAPP_ADC_SAMPLING_INTERVAL 5000
+#define GENERICAPP_ADC_SAMPLING_INTERVAL (60 * 1000) //one minute
 
 /*********************************************************************
  * MACROS
