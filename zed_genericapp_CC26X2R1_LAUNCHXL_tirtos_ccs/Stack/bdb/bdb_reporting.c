@@ -1854,18 +1854,17 @@ static uint8_t bdb_isAttrValueChangedSurpassDelta( uint8_t datatype, uint8_t* de
     }
     case ZCL_DATATYPE_SINGLE_PREC:
     {
-      res = BDBREPORTING_TRUE;
-      // float L = *((float*)lastValue);
-      // float D = *((float*)delta);
-      // float C = *((float*)curValue);
-      // if(L>=C)
-      // {
-      //   res = ( L-C >= D) ? BDBREPORTING_TRUE:BDBREPORTING_FALSE;
-      // }
-      // else
-      // {
-      //   res = ( C-L >= D) ? BDBREPORTING_TRUE:BDBREPORTING_FALSE;
-      // }
+      float L = *((float*)lastValue);
+      float D = *((float*)delta);
+      float C = *((float*)curValue);
+      if(L>=C)
+      {
+        res = ( L-C >= D) ? BDBREPORTING_TRUE:BDBREPORTING_FALSE;
+      }
+      else
+      {
+        res = ( C-L >= D) ? BDBREPORTING_TRUE:BDBREPORTING_FALSE;
+      }
       break;
     }
     case ZCL_DATATYPE_DOUBLE_PREC:
