@@ -98,10 +98,10 @@ const uint16_t zclGenericApp_identify_clusterRevision = 0x0001;
 // Basic Cluster
 const uint8_t zclGenericApp_HWRevision = GENERICAPP_HWVERSION;
 const uint8_t zclGenericApp_ZCLVersion = GENERICAPP_ZCLVERSION;
-const uint8_t zclGenericApp_ManufacturerName[] = { 16, 'T','e','x','a','s','I','n','s','t','r','u','m','e','n','t','s' };
+const uint8_t zclGenericApp_ManufacturerName[] = { 6, 'D', 'I', 'Y', 'R', 'u', 'Z'};
 const uint8_t zclGenericApp_PowerSource = POWER_SOURCE_BATTERY;
 uint8_t zclGenericApp_PhysicalEnvironment = PHY_UNSPECIFIED_ENV;
-const uint8_t zclGenericApp_ModelName[] = { 5, 'T','e','s','t', '2'};
+const uint8_t zclGenericApp_ModelName[] = { 15, 'D', 'I', 'Y', 'R', 'u', 'Z', '_', 'W', 'a', 't', 'e', 'r', 'M', 'o', 'n'};
 const uint8_t zclGenericApp_DateCode[] = {4, '2', '0', '2', '0'};
 const uint8_t zclGenericApp_ApplicationVersion = 1;
 const uint8_t zclGenericApp_BuildId = 1;
