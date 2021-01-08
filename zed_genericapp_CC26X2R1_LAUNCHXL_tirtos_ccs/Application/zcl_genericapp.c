@@ -1294,7 +1294,7 @@ static void zclGenericApp_processAdc(void) {
             }
         }
 
-        zclGenericApp_ADCValues[i] = 1000000.0 * totalMicrovolts / GENERICAPP_ADC_SAMPLES_COUNT;
+        zclGenericApp_ADCValues[i] = (totalMicrovolts / GENERICAPP_ADC_SAMPLES_COUNT) / 1000000.0;
         ADC_close(adc);
 
         zstack_bdbRepChangedAttrValueReq_t Req;
