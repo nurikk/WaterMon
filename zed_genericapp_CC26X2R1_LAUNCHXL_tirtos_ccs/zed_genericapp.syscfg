@@ -105,23 +105,20 @@ Button2.$hardware                 = system.deviceData.board.components["BTN-2"];
 Button2.gpioPin.$name             = "CONFIG_GPIO_BTN2";
 Button2.gpioPin.pinInstance.$name = "CONFIG_PIN_BTN2";
 
-Button3.hwConfig                  = "Active High No Pull";
 Button3.$name                     = "CONFIG_BUTTON_CH1";
-Button3.gpioPin.$name             = "CONFIG_GPIO_1";
+Button3.gpioPin.$name             = "CONFIG_GPIO_0";
 Button3.gpioPin.gpioPin.$assign   = "boosterpack.5";
-Button3.gpioPin.pinInstance.$name = "CONFIG_PIN_1";
+Button3.gpioPin.pinInstance.$name = "CONFIG_PIN_0";
 
 Button4.$name                     = "CONFIG_BUTTON_CH2";
-Button4.hwConfig                  = "Active High No Pull";
-Button4.gpioPin.$name             = "CONFIG_GPIO_2";
+Button4.gpioPin.$name             = "CONFIG_GPIO_1";
 Button4.gpioPin.gpioPin.$assign   = "boosterpack.8";
-Button4.gpioPin.pinInstance.$name = "CONFIG_PIN_2";
+Button4.gpioPin.pinInstance.$name = "CONFIG_PIN_1";
 
 Button5.$name                     = "CONFIG_BUTTON_CH3";
-Button5.hwConfig                  = "Active High No Pull";
-Button5.gpioPin.$name             = "CONFIG_GPIO_3";
+Button5.gpioPin.$name             = "CONFIG_GPIO_2";
 Button5.gpioPin.gpioPin.$assign   = "boosterpack.9";
-Button5.gpioPin.pinInstance.$name = "CONFIG_PIN_3";
+Button5.gpioPin.pinInstance.$name = "CONFIG_PIN_2";
 
 LED1.$name                     = "CONFIG_LED_RED";
 LED1.$hardware                 = system.deviceData.board.components.LED_RED;
