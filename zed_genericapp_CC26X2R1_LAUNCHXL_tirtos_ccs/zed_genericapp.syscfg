@@ -37,8 +37,6 @@ const SHA21       = SHA2.addInstance();
 const TRNG        = scripting.addModule("/ti/drivers/TRNG");
 const TRNG1       = TRNG.addInstance();
 const Temperature = scripting.addModule("/ti/drivers/Temperature");
-const UART        = scripting.addModule("/ti/drivers/UART");
-const UART1       = UART.addInstance();
 const Button      = scripting.addModule("/ti/drivers/apps/Button");
 const Button1     = Button.addInstance();
 const Button2     = Button.addInstance();
@@ -100,11 +98,6 @@ SHA21.$name = "CONFIG_SHA2_0";
 
 TRNG1.$name = "CONFIG_TRNG_0";
 
-UART1.$hardware           = system.deviceData.board.components.XDS110UART;
-UART1.$name               = "CONFIG_DISPLAY_UART";
-UART1.txPinInstance.$name = "CONFIG_PIN_UART_TX";
-UART1.rxPinInstance.$name = "CONFIG_PIN_UART_RX";
-
 Button1.$name                     = "CONFIG_BTN_LEFT";
 Button1.$hardware                 = system.deviceData.board.components["BTN-1"];
 Button1.gpioPin.$name             = "CONFIG_GPIO_BTN1";
@@ -162,9 +155,10 @@ zstack.deviceType                            = "zed";
 zstack.deviceTypeReadOnly                    = true;
 zstack.touchlink.$name                       = "ti_zstack_touchlink_zstack_touchlink0";
 zstack.pm.$name                              = "ti_zstack_pm_zstack_pm0";
+zstack.pm.pollPeriod                         = 1800000;
 zstack.rf.$name                              = "ti_zstack_rf_zstack_rf0";
-zstack.rf.primaryChannels                    = [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26];
 zstack.rf.txPower                            = "5";
+zstack.rf.primaryChannels                    = [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26];
 zstack.rf.radioConfig.$name                  = "ti_devices_radioconfig_settings_ieee_15_40";
 zstack.rf.radioConfig.codeExportConfig.$name = "ti_devices_radioconfig_code_export_param0";
 zstack.network.$name                         = "ti_zstack_network_zstack_network0";
@@ -181,9 +175,6 @@ zstack.advanced.tableSize.bindingTableSize   = 10;
  */
 ADC1.adc.$suggestSolution                                         = "ADC0";
 ADC2.adc.$suggestSolution                                         = "ADC0";
-UART1.uart.$suggestSolution                                       = "UART0";
-UART1.uart.txPin.$suggestSolution                                 = "boosterpack.4";
-UART1.uart.rxPin.$suggestSolution                                 = "boosterpack.3";
 Button1.gpioPin.gpioPin.$suggestSolution                          = "boosterpack.13";
 Button2.gpioPin.gpioPin.$suggestSolution                          = "boosterpack.12";
 LED1.gpioPin.gpioPin.$suggestSolution                             = "boosterpack.39";
