@@ -70,6 +70,7 @@
 
 #include <ti/drivers/apps/Button.h>
 #include <ti/drivers/ADC.h>
+#include <ti/drivers/Temperature.h>
 #include "ti_drivers_config.h"
 #include "util_timer.h"
 
@@ -1273,6 +1274,11 @@ static void zclGenericApp_processCounter(Button_Handle _btn)
 }
 
 static void zclGenericApp_processAdc(void) {
+
+    Temperature_init();
+    zclGenericApp_deviceTemperature = Temperature_getTemperature();
+
+
     GPIO_toggle(CONFIG_GPIO_GLED);
     ADC_Params   params;
     int_fast16_t res;

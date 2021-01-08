@@ -89,6 +89,7 @@
 
 // Global attributes
 const uint16_t zclGenericApp_basic_clusterRevision = 0x0002;
+int16_t zclGenericApp_deviceTemperature = 0;
 #ifdef ZCL_IDENTIFY
 const uint16_t zclGenericApp_identify_clusterRevision = 0x0001;
 #endif
@@ -234,6 +235,15 @@ CONST zclAttrRec_t zclGenericApp_Attrs[] =
               (void *)&zclGenericApp_basic_clusterRevision
             }
           },
+          {
+            ZCL_CLUSTER_ID_GENERAL_DEVICE_TEMP_CONFIG,
+            {
+              ATTRID_DEVICE_TEMPERATURE_CONFIGURATION_CURRENT_TEMPERATURE,
+              ZCL_DATATYPE_INT16,
+              ACCESS_CONTROL_READ | ACCESS_REPORTABLE,
+              (void *)&zclGenericApp_deviceTemperature
+            }
+          },
 
           // *** Identify Cluster Attribute ***
           {
@@ -305,7 +315,8 @@ const cId_t zclGenericApp_InClusterList[] =
 
 const cId_t zclGenericApp_OutClusterList[] =
 {
-  ZCL_CLUSTER_ID_GENERAL_BASIC
+  ZCL_CLUSTER_ID_GENERAL_BASIC,
+  ZCL_CLUSTER_ID_GENERAL_DEVICE_TEMP_CONFIG
 };
 #define ZCLGENERICAPP_MAX_OUTCLUSTERS  (sizeof(zclGenericApp_OutClusterList) / sizeof(zclGenericApp_OutClusterList[0]))
 
