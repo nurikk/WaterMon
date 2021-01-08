@@ -1220,43 +1220,37 @@ static void zclGenericApp_processAdc(void) {
       continue;
     }
     uint16_t adcValue0;
-    int32 totalMicrovolts = 0;
-    for (uint8_t j = 0; j < GENERICAPP_ADC_SAMPLES_COUNT; j++) {
-      res = ADC_convert(adc, &adcValue0);
-      if (res == ADC_STATUS_SUCCESS) {
-        totalMicrovolts += ADC_convertRawToMicroVolts(adc, adcValue0);
-      }
+
+    res = ADC_convert(adc, &adcValue0);
+    if (res == ADC_STATUS_SUCCESS) {
+      zclGenericApp_ADCValues[i] =
+          ADC_convertRawToMicroVolts(adc, adcValue0) / 1000000.0;
+      zstack_bdbRepChangedAttrValueReq_t Req;
+      Req.attrID = ATTRID_IOV_BASIC_PRESENT_VALUE;
+      Req.cluster = ZCL_CLUSTER_ID_GENERAL_ANALOG_INPUT_BASIC;
+      Req.endpoint = zclGenericApp_ChannelsSimpleDesc[i].EndPoint;
+      Zstackapi_bdbRepChangedAttrValueReq(appServiceTaskId, &Req);
     }
-
-    zclGenericApp_ADCValues[i] =
-        (totalMicrovolts / GENERICAPP_ADC_SAMPLES_COUNT) / 1000000.0;
     ADC_close(adc);
-
-    zstack_bdbRepChangedAttrValueReq_t Req;
-    Req.attrID = ATTRID_IOV_BASIC_PRESENT_VALUE;
-    Req.cluster = ZCL_CLUSTER_ID_GENERAL_ANALOG_INPUT_BASIC;
-    Req.endpoint = zclGenericApp_ChannelsSimpleDesc[i].EndPoint;
-    Zstackapi_bdbRepChangedAttrValueReq(appServiceTaskId, &Req);
   }
 
   ADC_Handle batteryADC = ADC_open(CONFIG_ADC_VDDS, &params);
   if (batteryADC != NULL) {
     uint16_t adcValue0;
-    int32 totalMicrovolts = 0;
-    for (uint8_t j = 0; j < GENERICAPP_ADC_SAMPLES_COUNT; j++) {
-      res = ADC_convert(batteryADC, &adcValue0);
-      if (res == ADC_STATUS_SUCCESS) {
-        totalMicrovolts += ADC_convertRawToMicroVolts(batteryADC, adcValue0);
-      }
-    }
-    ADC_close(batteryADC);
-    zclGenericApp_batteryVoltage = (totalMicrovolts / GENERICAPP_ADC_SAMPLES_COUNT) / 100000.0;
 
-    zstack_bdbRepChangedAttrValueReq_t Req;
-    Req.attrID = ATTRID_POWER_CONFIGURATION_BATTERY_VOLTAGE;
-    Req.cluster = ZCL_CLUSTER_ID_GENERAL_POWER_CFG;
-    Req.endpoint = 1;
-    Zstackapi_bdbRepChangedAttrValueReq(appServiceTaskId, &Req);
+    res = ADC_convert(batteryADC, &adcValue0);
+    if (res == ADC_STATUS_SUCCESS) {
+      zclGenericApp_batteryVoltage =
+          ADC_convertRawToMicroVolts(batteryADC, adcValue0) / 100000.0;
+
+      zstack_bdbRepChangedAttrValueReq_t Req;
+      Req.attrID = ATTRID_POWER_CONFIGURATION_BATTERY_VOLTAGE;
+      Req.cluster = ZCL_CLUSTER_ID_GENERAL_POWER_CFG;
+      Req.endpoint = 1;
+      Zstackapi_bdbRepChangedAttrValueReq(appServiceTaskId, &Req);
+    }
+
+    ADC_close(batteryADC);
   }
 
   UtilTimer_setTimeout(adcSamplingClkHandle, GENERICAPP_ADC_SAMPLING_INTERVAL);

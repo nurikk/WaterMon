@@ -29,7 +29,6 @@ const ECJPAKE     = scripting.addModule("/ti/drivers/ECJPAKE");
 const ECJPAKE1    = ECJPAKE.addInstance();
 const NVS         = scripting.addModule("/ti/drivers/NVS");
 const NVS1        = NVS.addInstance();
-const NVS2        = NVS.addInstance();
 const Power       = scripting.addModule("/ti/drivers/Power");
 const RF          = scripting.addModule("/ti/drivers/RF");
 const SHA2        = scripting.addModule("/ti/drivers/SHA2");
@@ -58,15 +57,20 @@ CCFG.levelBootloaderBackdoor  = "Active low";
 CCFG.ccfgTemplate.$name       = "ti_devices_CCFGTemplate0";
 
 ADC1.$name                = "CONFIG_ADC_CH1";
+ADC1.samplingDuration     = "10.6 us";
 ADC1.adc.adcPin.$assign   = "boosterpack.24";
 ADC1.adcPinInstance.$name = "CONFIG_PIN_4";
+ADC1.adcPinInstance.pull  = "Pull Up";
 
 ADC2.$name                = "CONFIG_ADC_CH2";
+ADC2.samplingDuration     = "10.6 us";
 ADC2.adc.adcPin.$assign   = "boosterpack.23";
 ADC2.adcPinInstance.$name = "CONFIG_PIN_5";
+ADC2.adcPinInstance.pull  = "Pull Up";
 
-ADC3.internalSignal = "Battery Channel";
-ADC3.$name          = "CONFIG_ADC_VDDS";
+ADC3.internalSignal   = "Battery Channel";
+ADC3.$name            = "CONFIG_ADC_VDDS";
+ADC3.samplingDuration = "10.6 us";
 
 AESCBC1.$name = "CONFIG_AESCBC_0";
 
@@ -86,13 +90,6 @@ NVS1.$name                    = "CONFIG_NVSINTERNAL";
 NVS1.internalFlash.$name      = "ti_drivers_nvs_NVSCC26XX0";
 NVS1.internalFlash.regionBase = 0x52000;
 NVS1.internalFlash.regionSize = 0x4000;
-
-NVS2.$name                          = "CONFIG_NVSEXTERNAL";
-NVS2.nvsType                        = "External";
-NVS2.$hardware                      = system.deviceData.board.components.MX25R8035F;
-NVS2.externalFlash.$name            = "ti_drivers_nvs_NVSSPI25X0";
-NVS2.externalFlash.regionSize       = 0x256000;
-NVS2.externalFlash.verifyBufferSize = 64;
 
 SHA21.$name = "CONFIG_SHA2_0";
 
@@ -136,26 +133,11 @@ LED2.$hardware                 = system.deviceData.board.components.LED_GREEN;
 LED2.gpioPin.$name             = "CONFIG_GPIO_GLED";
 LED2.gpioPin.pinInstance.$name = "CONFIG_PIN_GLED";
 
-const NVSSPI25XDevice                                      = scripting.addModule("/ti/drivers/nvs/NVSSPI25XDevice", {}, false);
-const NVSSPI25XDevice1                                     = NVSSPI25XDevice.addInstance({}, false);
-NVSSPI25XDevice1.$name                                     = "CONFIG_NVS_SPI_0";
-NVS2.externalFlash.spiFlashDevice                          = NVSSPI25XDevice1;
-NVSSPI25XDevice1.slaveSelectGpioInstance.$name             = "CONFIG_GPIO_0";
-NVSSPI25XDevice1.slaveSelectGpioInstance.pinInstance.$name = "CONFIG_PIN_0";
-
-const SPI                          = scripting.addModule("/ti/drivers/SPI", {}, false);
-const SPI1                         = SPI.addInstance({}, false);
-SPI1.$name                         = "CONFIG_SPI_0";
-NVSSPI25XDevice1.sharedSpiInstance = SPI1;
-SPI1.sclkPinInstance.$name         = "CONFIG_PIN_SPI_SCLK";
-SPI1.misoPinInstance.$name         = "CONFIG_PIN_SPI_MISO";
-SPI1.mosiPinInstance.$name         = "CONFIG_PIN_SPI_MOSI";
-
 zstack.deviceType                            = "zed";
 zstack.deviceTypeReadOnly                    = true;
 zstack.touchlink.$name                       = "ti_zstack_touchlink_zstack_touchlink0";
 zstack.pm.$name                              = "ti_zstack_pm_zstack_pm0";
-zstack.pm.pollPeriod                         = 1800000;
+zstack.pm.pollPeriod                         = 999999999;
 zstack.rf.$name                              = "ti_zstack_rf_zstack_rf0";
 zstack.rf.txPower                            = "5";
 zstack.rf.primaryChannels                    = [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26];
@@ -173,16 +155,9 @@ zstack.advanced.tableSize.bindingTableSize   = 10;
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-ADC1.adc.$suggestSolution                                         = "ADC0";
-ADC2.adc.$suggestSolution                                         = "ADC0";
-Button1.gpioPin.gpioPin.$suggestSolution                          = "boosterpack.13";
-Button2.gpioPin.gpioPin.$suggestSolution                          = "boosterpack.12";
-LED1.gpioPin.gpioPin.$suggestSolution                             = "boosterpack.39";
-LED2.gpioPin.gpioPin.$suggestSolution                             = "boosterpack.40";
-NVSSPI25XDevice1.slaveSelectGpioInstance.gpioPin.$suggestSolution = "boosterpack.38";
-SPI1.spi.$suggestSolution                                         = "SSI0";
-SPI1.spi.sclkPin.$suggestSolution                                 = "boosterpack.7";
-SPI1.spi.misoPin.$suggestSolution                                 = "boosterpack.14";
-SPI1.spi.mosiPin.$suggestSolution                                 = "boosterpack.15";
-SPI1.spi.dmaRxChannel.$suggestSolution                            = "DMA_CH3";
-SPI1.spi.dmaTxChannel.$suggestSolution                            = "DMA_CH4";
+ADC1.adc.$suggestSolution                = "ADC0";
+ADC2.adc.$suggestSolution                = "ADC0";
+Button1.gpioPin.gpioPin.$suggestSolution = "boosterpack.13";
+Button2.gpioPin.gpioPin.$suggestSolution = "boosterpack.12";
+LED1.gpioPin.gpioPin.$suggestSolution    = "boosterpack.39";
+LED2.gpioPin.gpioPin.$suggestSolution    = "boosterpack.40";

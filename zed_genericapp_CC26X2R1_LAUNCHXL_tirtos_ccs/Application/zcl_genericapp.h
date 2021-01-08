@@ -66,7 +66,6 @@ extern "C"
 #define GENERICAPP_CHANNELS_COUNT                 3
 #define GENERICAPP_CHANNELS_STARTING_ENDPOINT     2
 #define GENERICAPP_CHANNEL_ATTRS_COUNT            2
-#define GENERICAPP_ADC_SAMPLES_COUNT              10
 
 // Added to include Touchlink Target functionality
 #define GENERICAPP_NUM_GRPS 2
@@ -97,7 +96,7 @@ extern "C"
 #define GENERIC_HELPMODE      0x01
 
 #define GENERICAPP_END_DEVICE_REJOIN_DELAY 1000
-#define GENERICAPP_ADC_SAMPLING_INTERVAL (60 * 1000) //one minute
+#define GENERICAPP_ADC_SAMPLING_INTERVAL (5 * 60 * 1000) //5 minutes
 
 /*********************************************************************
  * MACROS
