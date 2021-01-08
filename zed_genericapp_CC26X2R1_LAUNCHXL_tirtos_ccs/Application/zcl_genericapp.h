@@ -123,6 +123,7 @@ extern CONST zclCommandRec_t zclGenericApp_Cmds[];
 extern CONST uint8_t zclCmdsArraySize;
 
 extern int16_t zclGenericApp_deviceTemperature;
+extern uint8_t zclGenericApp_batteryVoltage;
 
 // attribute list
 extern CONST zclAttrRec_t zclGenericApp_Attrs[];

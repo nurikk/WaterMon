@@ -90,6 +90,7 @@
 // Global attributes
 const uint16_t zclGenericApp_basic_clusterRevision = 0x0002;
 int16_t zclGenericApp_deviceTemperature = 0;
+uint8_t zclGenericApp_batteryVoltage = 0;
 #ifdef ZCL_IDENTIFY
 const uint16_t zclGenericApp_identify_clusterRevision = 0x0001;
 #endif
@@ -236,6 +237,15 @@ CONST zclAttrRec_t zclGenericApp_Attrs[] =
             }
           },
           {
+            ZCL_CLUSTER_ID_GENERAL_POWER_CFG,
+            {
+              ATTRID_POWER_CONFIGURATION_BATTERY_VOLTAGE,
+              ZCL_DATATYPE_UINT8,
+              ACCESS_CONTROL_READ | ACCESS_REPORTABLE,
+              (void *)&zclGenericApp_batteryVoltage
+            }
+          },
+          {
             ZCL_CLUSTER_ID_GENERAL_DEVICE_TEMP_CONFIG,
             {
               ATTRID_DEVICE_TEMPERATURE_CONFIGURATION_CURRENT_TEMPERATURE,
@@ -316,7 +326,8 @@ const cId_t zclGenericApp_InClusterList[] =
 const cId_t zclGenericApp_OutClusterList[] =
 {
   ZCL_CLUSTER_ID_GENERAL_BASIC,
-  ZCL_CLUSTER_ID_GENERAL_DEVICE_TEMP_CONFIG
+  ZCL_CLUSTER_ID_GENERAL_DEVICE_TEMP_CONFIG,
+  ATTRID_POWER_CONFIGURATION_BATTERY_VOLTAGE
 };
 #define ZCLGENERICAPP_MAX_OUTCLUSTERS  (sizeof(zclGenericApp_OutClusterList) / sizeof(zclGenericApp_OutClusterList[0]))
 

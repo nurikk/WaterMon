@@ -13,6 +13,7 @@ const rfdesign    = scripting.addModule("/ti/devices/radioconfig/rfdesign");
 const ADC         = scripting.addModule("/ti/drivers/ADC", {}, false);
 const ADC1        = ADC.addInstance();
 const ADC2        = ADC.addInstance();
+const ADC3        = ADC.addInstance();
 const AESCBC      = scripting.addModule("/ti/drivers/AESCBC");
 const AESCBC1     = AESCBC.addInstance();
 const AESCCM      = scripting.addModule("/ti/drivers/AESCCM");
@@ -65,6 +66,9 @@ ADC1.adcPinInstance.$name = "CONFIG_PIN_4";
 ADC2.$name                = "CONFIG_ADC_CH2";
 ADC2.adc.adcPin.$assign   = "boosterpack.23";
 ADC2.adcPinInstance.$name = "CONFIG_PIN_5";
+
+ADC3.internalSignal = "Battery Channel";
+ADC3.$name          = "CONFIG_ADC_VDDS";
 
 AESCBC1.$name = "CONFIG_AESCBC_0";
 
