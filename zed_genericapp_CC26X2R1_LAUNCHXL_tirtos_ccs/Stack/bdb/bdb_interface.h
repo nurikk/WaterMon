@@ -224,7 +224,7 @@ extern "C"
 #define BDBREPORTING_DEFAULTMININTERVAL    0x000A
 
 //Define the DISABLE_DEFAULT_RSP flag for reporting attributes
-#define BDB_REPORTING_DISABLE_DEFAULT_RSP  FALSE
+#define BDB_REPORTING_DISABLE_DEFAULT_RSP  TRUE
 #endif
 
 /*********************************************************************
