@@ -209,6 +209,16 @@ CONST zclAttrRec_t zclGenericApp_Attrs[] =
               (void *)&zclGenericApp_PowerSource
             }
           },
+           {
+            ZCL_CLUSTER_ID_GENERAL_BASIC,
+            { // Attribute record
+              ATTRID_BASIC_PHYSICAL_ENVIRONMENT,
+              ZCL_DATATYPE_ENUM8,
+              (ACCESS_CONTROL_READ | ACCESS_CONTROL_WRITE),
+              (void *)&zclGenericApp_PhysicalEnvironment
+            }
+          },
+
           {
             ZCL_CLUSTER_ID_GENERAL_BASIC,
             { // Attribute record
@@ -216,15 +226,6 @@ CONST zclAttrRec_t zclGenericApp_Attrs[] =
               ZCL_DATATYPE_UINT8,
               ACCESS_CONTROL_READ,
               (void *)&zclGenericApp_BuildId
-            }
-          },
-          {
-            ZCL_CLUSTER_ID_GENERAL_BASIC,
-            { // Attribute record
-              ATTRID_BASIC_PHYSICAL_ENVIRONMENT,
-              ZCL_DATATYPE_ENUM8,
-              (ACCESS_CONTROL_READ | ACCESS_CONTROL_WRITE),
-              (void *)&zclGenericApp_PhysicalEnvironment
             }
           },
           {
@@ -326,8 +327,8 @@ const cId_t zclGenericApp_InClusterList[] =
 const cId_t zclGenericApp_OutClusterList[] =
 {
   ZCL_CLUSTER_ID_GENERAL_BASIC,
-  ZCL_CLUSTER_ID_GENERAL_DEVICE_TEMP_CONFIG,
-  ATTRID_POWER_CONFIGURATION_BATTERY_VOLTAGE
+  ZCL_CLUSTER_ID_GENERAL_POWER_CFG,
+  ZCL_CLUSTER_ID_GENERAL_DEVICE_TEMP_CONFIG
 };
 #define ZCLGENERICAPP_MAX_OUTCLUSTERS  (sizeof(zclGenericApp_OutClusterList) / sizeof(zclGenericApp_OutClusterList[0]))
 
