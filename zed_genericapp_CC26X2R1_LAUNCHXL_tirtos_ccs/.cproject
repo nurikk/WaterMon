@@ -128,7 +128,7 @@
 									<listOptionValue builtIn="false" value="ZCL_DISCOVER"/>
 									<listOptionValue builtIn="false" value="ZCL_WRITE"/>
 									<listOptionValue builtIn="false" value="ZCL_BASIC"/>
-									<listOptionValue builtIn="false" value="ZCL_IDENTIFY"/>
+									<listOptionValue builtIn="false" value="xZCL_IDENTIFY"/>
 									<listOptionValue builtIn="false" value="TIMAC_ROM_IMAGE_BUILD"/>
 									<listOptionValue builtIn="false" value="TIMAC_ROM_PATCH"/>
 									<listOptionValue builtIn="false" value="CUI_DISABLE"/>

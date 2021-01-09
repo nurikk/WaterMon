@@ -254,26 +254,6 @@ CONST zclAttrRec_t zclGenericApp_Attrs[] =
               ACCESS_CONTROL_READ | ACCESS_REPORTABLE,
               (void *)&zclGenericApp_deviceTemperature
             }
-          },
-
-          // *** Identify Cluster Attribute ***
-          {
-            ZCL_CLUSTER_ID_GENERAL_IDENTIFY,
-            { // Attribute record
-              ATTRID_IDENTIFY_IDENTIFY_TIME,
-              ZCL_DATATYPE_UINT16,
-              (ACCESS_CONTROL_READ | ACCESS_CONTROL_WRITE),
-              (void *)&zclGenericApp_IdentifyTime
-            }
-          },
-          {
-            ZCL_CLUSTER_ID_GENERAL_IDENTIFY,
-            {  // Attribute record
-              ATTRID_CLUSTER_REVISION,
-              ZCL_DATATYPE_UINT16,
-              ACCESS_CONTROL_READ | ACCESS_GLOBAL,
-              (void *)&zclGenericApp_identify_clusterRevision
-            }
           }
         };
 
@@ -289,22 +269,22 @@ float zclGenericApp_ADCValues[GENERICAPP_CHANNELS_COUNT];
 CONST zclAttrRec_t zclGenericApp_ChannelAttrs[][GENERICAPP_CHANNEL_ATTRS_COUNT] = {
    // ================================ CH1 [0] =========================================
    {
-    ATTR(ZCL_CLUSTER_ID_GENERAL_MULTISTATE_INPUT_BASIC, ATTRID_IOV_BASIC_PRESENT_VALUE, ZCL_DATATYPE_UINT16, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE | ACCESS_CONTROL_WRITE), &zclGenericApp_MutistateInputValues[0]),
     ATTR(ZCL_CLUSTER_ID_GENERAL_ANALOG_INPUT_BASIC, ATTRID_IOV_BASIC_PRESENT_VALUE, ZCL_DATATYPE_SINGLE_PREC, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE), &zclGenericApp_ADCValues[0]),
+    ATTR(ZCL_CLUSTER_ID_GENERAL_MULTISTATE_INPUT_BASIC, ATTRID_IOV_BASIC_PRESENT_VALUE, ZCL_DATATYPE_UINT16, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE | ACCESS_CONTROL_WRITE), &zclGenericApp_MutistateInputValues[0])
    },
    // ============================== END  CH1 =======================================
 
    // ================================ CH2 [1] =========================================
    {
-    ATTR(ZCL_CLUSTER_ID_GENERAL_MULTISTATE_INPUT_BASIC, ATTRID_IOV_BASIC_PRESENT_VALUE, ZCL_DATATYPE_UINT16, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE | ACCESS_CONTROL_WRITE), &zclGenericApp_MutistateInputValues[1]),
     ATTR(ZCL_CLUSTER_ID_GENERAL_ANALOG_INPUT_BASIC, ATTRID_IOV_BASIC_PRESENT_VALUE, ZCL_DATATYPE_SINGLE_PREC, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE), &zclGenericApp_ADCValues[1]),
+    ATTR(ZCL_CLUSTER_ID_GENERAL_MULTISTATE_INPUT_BASIC, ATTRID_IOV_BASIC_PRESENT_VALUE, ZCL_DATATYPE_UINT16, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE | ACCESS_CONTROL_WRITE), &zclGenericApp_MutistateInputValues[1])
    },
    // ============================== END  CH2 =======================================
 
    // ================================ CH3 [2] =========================================
    {
-    ATTR(ZCL_CLUSTER_ID_GENERAL_MULTISTATE_INPUT_BASIC, ATTRID_IOV_BASIC_PRESENT_VALUE, ZCL_DATATYPE_UINT16, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE | ACCESS_CONTROL_WRITE), &zclGenericApp_MutistateInputValues[2]),
     ATTR(ZCL_CLUSTER_ID_GENERAL_ANALOG_INPUT_BASIC, ATTRID_IOV_BASIC_PRESENT_VALUE, ZCL_DATATYPE_SINGLE_PREC, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE), &zclGenericApp_ADCValues[2]),
+    ATTR(ZCL_CLUSTER_ID_GENERAL_MULTISTATE_INPUT_BASIC, ATTRID_IOV_BASIC_PRESENT_VALUE, ZCL_DATATYPE_UINT16, (ACCESS_CONTROL_READ | ACCESS_REPORTABLE | ACCESS_CONTROL_WRITE), &zclGenericApp_MutistateInputValues[2])
    }
    // ============================== END  CH3 =======================================
 };
@@ -318,8 +298,7 @@ CONST zclAttrRec_t zclGenericApp_ChannelAttrs[][GENERICAPP_CHANNEL_ATTRS_COUNT] 
 // specific cluster IDs.
 const cId_t zclGenericApp_InClusterList[] =
 {
-  ZCL_CLUSTER_ID_GENERAL_BASIC,
-  ZCL_CLUSTER_ID_GENERAL_IDENTIFY,
+  ZCL_CLUSTER_ID_GENERAL_BASIC
 };
 #define ZCLGENERICAPP_MAX_INCLUSTERS   (sizeof(zclGenericApp_InClusterList) / sizeof(zclGenericApp_InClusterList[0]))
 
