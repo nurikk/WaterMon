@@ -1206,6 +1206,10 @@ static void zclGenericApp_processAdc(void) {
 
   Temperature_init();
   zclGenericApp_deviceTemperature = Temperature_getTemperature();
+  Req.attrID = ATTRID_DEVICE_TEMPERATURE_CONFIGURATION_CURRENT_TEMPERATURE;
+  Req.cluster = ZCL_CLUSTER_ID_GENERAL_DEVICE_TEMP_CONFIG;
+  Req.endpoint = 1;
+  Zstackapi_bdbRepChangedAttrValueReq(appServiceTaskId, &Req);
 
   // GPIO_toggle(CONFIG_GPIO_GLED);
   ADC_Params params;
