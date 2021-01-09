@@ -462,9 +462,8 @@ static void zclGenericApp_Init(void) {
   Zstackapi_bdbStartCommissioningReq(appServiceTaskId,
                                      &zstack_bdbStartCommissioningReq);
 
-  //  GPIO_setConfig(CONFIG_GPIO_1, GPIO_CFG_IN_PD | GPIO_CFG_IN_INT_RISING);
-  //  GPIO_setCallback(CONFIG_GPIO_1, gpioButtonFxn0);
-  //  GPIO_enableInt(CONFIG_GPIO_1);
+  UtilTimer_setTimeout(adcSamplingClkHandle, GENERICAPP_ADC_SAMPLING_INTERVAL);
+  UtilTimer_start(&adcSamplingClkStruct);
 }
 
 /*********************************************************************
@@ -543,8 +542,8 @@ static void zclGenericApp_initializeClocks(void) {
 #endif
 
   adcSamplingClkHandle = UtilTimer_construct(
-      &adcSamplingClkStruct, zclGenericApp_processAdcSamplintTimeoutCallback, 0,
-      GENERICAPP_ADC_SAMPLING_INTERVAL, true, 0); // start immediately
+      &adcSamplingClkStruct, zclGenericApp_processAdcSamplintTimeoutCallback,
+      GENERICAPP_ADC_SAMPLING_INTERVAL, 0, false, 0);
 }
 
 #if ZG_BUILD_ENDDEVICE_TYPE
@@ -1203,9 +1202,10 @@ static void zclGenericApp_processCounter(Button_Handle _btn) {
 }
 
 static void zclGenericApp_processAdc(void) {
-
   Temperature_init();
   zclGenericApp_deviceTemperature = Temperature_getTemperature();
+
+  zstack_bdbRepChangedAttrValueReq_t Req;
   Req.attrID = ATTRID_DEVICE_TEMPERATURE_CONFIGURATION_CURRENT_TEMPERATURE;
   Req.cluster = ZCL_CLUSTER_ID_GENERAL_DEVICE_TEMP_CONFIG;
   Req.endpoint = 1;
